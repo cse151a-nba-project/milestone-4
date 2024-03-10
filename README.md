@@ -22,6 +22,54 @@ Abstract, for reference: 
 
 Although sports analytics captured national attention only in 2011 with the release of Moneyball, research in the field is nearly a century old. Until relatively recently, this research was largely done by hand; however, the heavily quantitative nature of sports analytics makes it an attractive target for machine learning. This paper explores the application of advanced machine learning models to predict team performance in National Basketball Association (NBA) regular season and playoff games. Several models were trained on a rich dataset spanning 73 years, which includes individual player metrics, opponent-based performance, and team composition. The core of our analysis lies in combining individual player metrics, opponent-based game performances, and team chemistry, extending beyond traditional stat line analysis by incorporating nuanced factors. We employ various machine learning techniques, including neural networks and gradient boosting machines, to generate predictive models for player performance and compare their performance with both each other and traditional predictive models. Our analysis suggests that gradient boosting machines and neural networks significantly outperform other models. Neural networks demonstrate significant effectiveness in handling complex, non-linear data interrelations, while gradient boosting machines excel in identifying intricate predictor interactions. Our findings emphasize the immense potential of sophisticated machine learning techniques in sports analytics and mark a growing shift towards computer-aided and computer-based approaches in sports analytics.
 
+
+# 1. Evaluate your (Milestone 3) data, labels and loss function. Were they sufficient or did you have have to change them.
+
+Reference: https://github.com/cse151a-nba-project/milestone-3/blob/main/CSE_151A_Milestone_3.ipynb
+
+Based on our milestone 3 analysis, it seems that the data, labels, and loss function used in the initial linear regression model were sufficient to get a baseline performance, but there is significant room for improvement to reduce the underfitting and high error rates observed.
+
+Data and Labels:
+The data consists of advanced player statistics (per, ws_48, usg_percent, bpm, vorp) for the top 8 players of each team from 1990 to 2023. The corresponding labels are the actual team win percentages. This data and label selection appears to be a good starting point, capturing key player performance metrics that could influence team success.
+
+However, as mentioned in the planned improvements, additional feature engineering and selection could enhance the model's performance. This might involve exploring different or additional player statistics, considering interactions between features, or incorporating team-level metrics. Polynomial features could also be introduced to capture nonlinear relationships without immediately switching to more complex models.
+
+Loss Function:
+Our analysis uses Mean Squared Error (MSE) as the primary loss function to evaluate the model's performance. MSE is a commonly used loss function for regression problems and is generally well-suited for this task. It penalizes larger errors more heavily, which is appropriate when trying to minimize the difference between predicted and actual win percentages.
+
+Our use of additional evaluation metrics like Mean Absolute Error (MAE) and R-squared (R^2) provides a more comprehensive assessment of the model's performance. MAE gives an interpretable measure of the average absolute difference between predictions and actual values, while R^2 indicates the proportion of variance in the dependent variable (win percentage) that is predictable from the independent variables (player statistics).
+
+For these models, we decided to include several more statistics which we believed were highly correlated with wins. These stats were, ts%, x3p_ar, 2 stats correlated with offensive efficiency and output, and experience, which we believed to be a major factor in a teams performance.
+
+In conclusion, while our initial data, labels, and loss function choices were sufficient for establishing a baseline, the high error rates and underfitting suggest that improvements can be made. The planned strategies, such as feature engineering, exploring more complex models (e.g., polynomial regression, deep neural networks), and applying regularization techniques, are explored in this notebook in order to improve our model's performance.
+
+# 2. Train your second model
+
+Based on the analysis of your current model's performance with linear regression, which indicates underfitting given the high mean squared error (MSE) rates for both testing and training, we are considering using a Deep Neural Network (DNN) model which can capture more of the intricacies in the data. We also intend to experiment with Elastic Net models that can capture more details of the data but with regularization to prevent overfitting.
+
+We want to experiment with a Deep Neural Network next because it can model relationships between variables that are not linear, capturing more complex patterns in the dataset. Given the nature of sports statistics and team performance metrics, the relationship between the input features (advanced player statistics) and the output (team win percentages) might not be linear. DNN regression can model intricate interactions between player statistics and their impact on team success rates through its multiple hidden layers and non-linear activation functions. This flexibility allows DNNs to potentially offer significant improvements over simpler models by accurately capturing the non-linear and complex relationships in our dataset.
+
+We also experimented with an Elastic Net model, a type of specialized linear regression, given the promising performance of out previous linear regressor. Elastic Net uses regularization techniques which allows our model to grow more complex without overfitting. It can handle Multicolinearity well, better than a simple linear regressor and additionally the regularization allows it to mimic feature selection by reducing weights near 0, allowing us to use a wider variety of stats.
+
+Planned Strategy:
+We aim to design a DNN with several hidden layers and neurons, experimenting with different architectures to find the most effective configuration for our dataset. Regularization techniques (like dropout and L2 regularization) and optimization algorithms will be also used to enhance learning and prevent overfitting.
+Feature scaling and normalization will be crucial preprocessing steps
+(that we've done in milestone 2) to ensure that the DNN model trains efficiently.
+We will also use a portion of the dataset for validation during training to monitor for overfitting and adjust the model's parameters accordingly.
+
+# 3. Evaluate your model compare training vs test error
+
+|              | Linear | Elastic Net |  DNN   | Tuned DNN |
+|--------------|--------|-------------|--------|-----------|
+| Training MSE | 16.704 |   17.376    | 19.954 |  11.957   |
+| Training MAE | 3.2729 |   3.3292    | 3.5214 |  2.3812   |
+| Training R^2 | 0.9312 |   0.9284    | 0.9178 |  0.9507   |
+| Testing MSE  | 20.881 |   19.921    | 24.686 |  37.071   |
+| Testing MAE  | 3.7103 |   3.6713    | 4.1783 |  4.7918   |
+| Testing R^2  | 0.9028 |   0.9072    | 0.8850 |  0.8274   |
+
+As shown in the table above, the Hyper-parameter tuned DNN has the best training error by far, but also the worst test error. This indicates that our tuned DNN is overfitting the training data. However, the elastic net model, while having a slightly worse training loss than the baseline Linear Regressor, actually has the best testing loss out of all the models, indicating that it is adequately fitting the data without overfitting. This makes sense since the Elastic Net model is designed to avoid overfitting with multiple regularization techniques. However, the model's performance is only marginally better than the Linear Regressor, not achieving quite performing as we had hoped to.
+
 # 4. Where does your model fit in the fitting graph, how does it compare to your first model?
 
 ## Note: we will discuss our multiple models (which we consider technically as one) here.
@@ -70,7 +118,7 @@ To implement this plan, we will start by preprocessing our data, ensuring that i
 
 After training the SVM model with different hyperparameter configurations, we will evaluate its performance using various metrics such as Mean Squared Error (MSE), Mean Absolute Error (MAE), and R-squared (R^2). We will compare these metrics with our previous models to determine if the SVM model provides a significant improvement.
 
-In conclusion, our second set of models, which included the Elastic Net, hyperparameter-tuned DNN, and manually tuned DNN, showed significant improvements over our initial linear regression model. The Elastic Net model demonstrated the best balance between performance and generalization, with lower training and testing errors compared to the linear regression model. It effectively managed model complexity and achieved R^2 values above 0.90, indicating a strong correlation between predicted and actual win percentages.
+In conclusion, our second set of models, which included the Elastic Net, hyperparameter-tuned DNN, and manually tuned DNN, showed improvements over our initial linear regression model. The Elastic Net model demonstrated the best balance between performance and generalization, with lower training and testing errors compared to the linear regression model. It effectively managed model complexity and achieved R^2 values above 0.90, indicating a strong correlation between predicted and actual win percentages.
 
 The hyperparameter-tuned DNN model achieved the lowest training error, showcasing its ability to fit the training data exceptionally well. However, it exhibited signs of overfitting, as evidenced by the higher testing error compared to the Elastic Net model. This suggests that the model's complexity may have hindered its generalization ability to unseen data.
 
@@ -78,7 +126,7 @@ The manually tuned DNN model also demonstrated improvement over the linear regre
 
 To further improve our models, we can (continue to) explore several avenues:
 
-Regularization Techniques: Investigate different regularization techniques for the DNN models, such as L1 and L2 regularization, dropout, or early stopping, to mitigate overfitting and enhance generalization.
+Regularization Techniques: Investigate different regularization techniques for the DNN models, such as L1 and L2 regularization, dropout, or early stopping, to mitigate overfitting and enhance generalization. Since our tuned DNN model is severly overfitting to the training data, we believe that this regularizing it may be able to bring the very low training error to the testing error.
 
 Hyperparameter Fine-tuning: Conduct more extensive hyperparameter tuning for the Elastic Net and DNN models to find the optimal combination of hyperparameters that minimizes the error metrics.
 
