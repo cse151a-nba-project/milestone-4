@@ -118,6 +118,10 @@ To implement this plan, we will start by preprocessing our data, ensuring that i
 
 After training the SVM model with different hyperparameter configurations, we will evaluate its performance using various metrics such as Mean Squared Error (MSE), Mean Absolute Error (MAE), and R-squared (R^2). We will compare these metrics with our previous models to determine if the SVM model provides a significant improvement.
 
+# 7. Conclusion section: What is the conclusion of your 2nd model? What can be done to possibly improve it? How did it perform to your first and why?
+
+
+
 In conclusion, our second set of models, which included the Elastic Net, hyperparameter-tuned DNN, and manually tuned DNN, showed improvements over our initial linear regression model. The Elastic Net model demonstrated the best balance between performance and generalization, with lower training and testing errors compared to the linear regression model. It effectively managed model complexity and achieved R^2 values above 0.90, indicating a strong correlation between predicted and actual win percentages.
 
 The hyperparameter-tuned DNN model achieved the lowest training error, showcasing its ability to fit the training data exceptionally well. However, it exhibited signs of overfitting, as evidenced by the higher testing error compared to the Elastic Net model. This suggests that the model's complexity may have hindered its generalization ability to unseen data.
